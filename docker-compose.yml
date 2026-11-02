@@ -1,0 +1,22 @@
+services:
+  api:
+    build: ./backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      COPILOT_DB: /app/storage/copilot.sqlite3
+      COPILOT_API_TOKEN: ${COPILOT_API_TOKEN:-}
+      COPILOT_AUTH_ENABLED: ${COPILOT_AUTH_ENABLED:-on}
+      COPILOT_LOCAL_SETUP_ENABLED: ${COPILOT_LOCAL_SETUP_ENABLED:-0}
+    volumes:
+      - copilot_data:/app/storage
+    restart: unless-stopped
+  web:
+    build: ./frontend
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:5173:80"
+    restart: unless-stopped
+volumes:
+  copilot_data:
